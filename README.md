@@ -1,3 +1,8 @@
+Implementation and Visualization of Breadth First Search.
+
+
+
+
 Change the start and goal point at the start to desired value
 
 NOTE ---------- the origin is at the top left NOT BOTTOM LEFT.

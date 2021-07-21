@@ -8,50 +8,17 @@ Created on Sun Mar 14 07:07:26 2021
 import numpy as np
 import cv2 
 import matplotlib.pyplot as plt
-# from cv2 import VideoWriter, VideoWriter_fourcc
-#import imageio
-
 
 # initial and goal state
 start = [0,0]
-
 goal = [250,360]
 
-# open and visited list initialization
-# open = [start]
-# visited = []
-
-# state = []
-
-
-
 #######################################################################################3
-
 # defining obstacle space
-
-# maze = np.zeros((100,200))
-
-
-# for i in range(100):
-
-    
-#     for j in range(200):
-    
-#         if (i >= 40) and (i <=60) and (j >= 90) and (j <= 110):
-#             maze[i][j] = 1
-            
-#         if ((j-160)**2+(i-50)**2 < 15**2):
-#             maze[i][j] = 1
-
-
-####### Final map
 maze = np.zeros((300,400))
 
-
 for i in range(300):
-    
     for j in range(400):
-    
         # three rectangles
         if (i >= 20) and (i <=70) and (j >= 200) and (j <= 210):
             maze[i][j] = 1
@@ -59,48 +26,34 @@ for i in range(300):
             maze[i][j] = 1
         if (i >= 20) and (i <=30) and (j >= 210) and (j <= 230):
             maze[i][j] = 1 
-        
             # circle
         if ((j-90)**2+(i-(-70+300))**2 <= 35**2):
             maze[i][j] = 1
-         
             # Ellipse
         if ((j-246)/60)**2 + ((i-155)/30)**2 <= 1 :
              maze[i][j] = 1
-            
             #  inclined rectangle
         if (-0.7*j+1*(300-i))>=73.4 and ((300-i)+1.428*j)>=172.55 and (-0.7*j+1*(300-i))<=99.81 and ((300-i)+1.428*j)<=429:
             maze[i][j] = 1
-           
             # polygon
         if ((300-i)+j>=391 and j-(300-i)<=265 and (300-i)+0.8*j<=425.7 and  (300-i)+0.17*j<=200 and 0.9*j -(300-i) >=148.7) or   (13.5*j+(300-i)<=5256.7 and 1.43*j-(300-i)>=369 and (300-i)+0.81*j >=425):    
             maze[i][j] = 1
             
-            
-
 ######################################################################################333           
 
 maze1 = maze.copy() 
 
-
-
 img = maze.copy()
 [row,col] = np.where(img == 1)
-
 
 # making all obstacles black 
 for b in range(len(row)):
     img[row[b]][col[b]] = 255
     
-    
-
 # movement functions (8)
-
 def N(maze1):
     global img
     # s is source
-
-
     #check N, make eveything that is 0 - k, if it is 1 o anything else dont do anything
     if (maze1[p-1][q] == 0) and (p != 0):
         maze1[p-1][q] = k+1
@@ -109,10 +62,8 @@ def N(maze1):
         
         return maze1
     
-
 def S(maze1):
     global img
-    
     
     if (p != 299) and (maze1[p+1][q] == 0):
         maze1[p+1][q] = k+1
@@ -121,7 +72,6 @@ def S(maze1):
         
         return maze1    
     
-
 def E(maze1):
     global img
     
@@ -132,7 +82,6 @@ def E(maze1):
         
         return maze1
     
-
 def W(maze1):
     global img
     
@@ -183,7 +132,6 @@ def SW(maze1):
         
         return maze1
 
-
 ######################################################################################
 
 # make the start node to be 2
@@ -192,7 +140,6 @@ maze1[start[0]][start[1]] = 2
 g = False
 k = 1
 
-
 #img_counter = 0
 video = []
 while (g == False):
@@ -200,7 +147,6 @@ while (g == False):
     [m,n] = np.where(maze1 == k+1)
     k = k+1
     
-    #img_counter
     img1 = img.copy()
     video.append(img1)
     cv2.imwrite(str(k) + '.png',img1)
@@ -213,7 +159,6 @@ while (g == False):
             g = True
             break
         
-        
         N(maze1)
         S(maze1)
         E(maze1)
@@ -223,12 +168,6 @@ while (g == False):
         SE(maze1)
         SW(maze1)
         
-        # img1 = img.copy()
-        # video.append(img1)
-        #cv2.imwrite(str(img_counter) + '.png',img) 
-        #img_counter =+ 1
-        
-
 ###########################################################################################
 # labeling the shortest path
 
@@ -238,8 +177,6 @@ maze2 = maze1.copy()
 # k = maze2[goal[0]][goal[1]]
 
 # [p,q] = goal
-
-
 
 # Same as movement functions but instead of k+1 it is k-1
 i, j = goal
@@ -280,14 +217,12 @@ while k > 2:
         the_path.append([i, j])
         k -= 1      
 
-
 # the_path is the coordinates for the shortest path
 m = maze.copy()
 
 for j in range(len(the_path)):
     for i in range(0,1):
         m[the_path[j][i]][the_path[j][i+1]] = 150
-
 
 img1 = m.copy()
 [row1,col1] = np.where(img1 == 1)
@@ -298,6 +233,7 @@ for b in range(len(row1)):
 cv2.imwrite('Shortest_path.png',img1) 
 
 plt.imshow(img1),plt.show()
+
 ###########################################################################################
 # video maker
 
@@ -310,8 +246,6 @@ height,width,layers=img[1].shape
 img1 = cv2.imread('Shortest_path.png')
 img.append(img1)
 video=cv2.VideoWriter('video_BFS.mp4',-1,10,(width,height))
-
-
 
 for j in range(len(the_path)+1):
 
